@@ -9,6 +9,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import CartProvider from '@/providers/CartProvider';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -53,20 +54,22 @@ function RootLayoutNav() {
   return (
 
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        <Stack.Screen
-          name="cart"
-          options={{
-            title: 'Cart',
-            presentation: Platform.OS === 'ios' ? 'modal' : 'card',
-            headerShown: true,
-            animationTypeForReplace: 'push',
-            gestureEnabled: Platform.OS === 'ios'
-          }}
-        />
-      </Stack>
+      <CartProvider>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          <Stack.Screen
+            name="cart"
+            options={{
+              title: 'Cart',
+              presentation: Platform.OS === 'ios' ? 'modal' : 'card',
+              headerShown: true,
+              animationTypeForReplace: 'push',
+              gestureEnabled: Platform.OS === 'ios'
+            }}
+          />
+        </Stack>
+      </CartProvider>
     </ThemeProvider>
 
   );

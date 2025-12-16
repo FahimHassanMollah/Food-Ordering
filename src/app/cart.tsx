@@ -1,11 +1,13 @@
 import { View, Text, StyleSheet, Pressable, Platform } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useRouter } from 'expo-router'
 import { FontAwesome } from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar';
+import { useCart } from '@/providers/CartProvider';
 
 export default function Cart() {
     const router = useRouter();
+    const { items } = useCart();
 
     return (
         <View style={styles.container}>
