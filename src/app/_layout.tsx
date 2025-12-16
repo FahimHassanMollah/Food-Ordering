@@ -4,6 +4,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
@@ -55,6 +56,16 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen
+          name="cart"
+          options={{
+            title: 'Cart',
+            presentation: Platform.OS === 'ios' ? 'modal' : 'card',
+            headerShown: true,
+            animationTypeForReplace: 'push',
+            gestureEnabled: Platform.OS === 'ios'
+          }}
+        />
       </Stack>
     </ThemeProvider>
 
