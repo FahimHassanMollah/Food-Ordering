@@ -1,47 +1,60 @@
 import { CartItem, Product } from "@/types";
+import { randomUUID } from "expo-crypto";
 import { createContext, useContext, useState } from "react";
 
 type CartType = {
   items: CartItem[];
+  total: number;
   addItem: (product: Product, size: CartItem['size'],) => void;
+  updateQuantity: (itemId: string, delta: -1 | 1) => void;
+  checkout: () => void;
 }
 const CartContext = createContext<CartType>({
   items: [],
+  total: 0,
   addItem: () => { },
+  updateQuantity: () => { },
+  checkout: () => { },
 });
 
 const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const addItem = (product: Product, size: CartItem['size'],) => {
-    setItems((prevItems: CartItem[]) => {
-      const existingItemIndex = prevItems.findIndex(
-        (item) => item.product.id === product.id && item.size === size
-      );
+    const existingItem = items.find((item) => item.product_id === product.id && item.size === size);
+    if (existingItem) {
+      updateQuantity(existingItem.id, 1);
+      return;
+    }
+    const newCartItem: CartItem = {
+      product,
+      size,
+      quantity: 1,
+      product_id: product.id,
+      id: randomUUID(),
+    };
+    setItems((prevItems) => [...prevItems, newCartItem]);
+  }
+  const updateQuantity = (itemId: string, delta: -1 | 1) => {
 
-      if (existingItemIndex >= 0) {
-        const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex].quantity += 1;
-        return updatedItems;
-      } else {
-        // Ensure to provide all required CartItem properties (id, product_id, etc.)
-        const newCartItem: CartItem = {
-          id: `${product.id}-${size}`, // or use a better unique id strategy if needed
-          product_id: product.id,
-          product,
-          size,
-          quantity: 1,
-        };
-        return [...prevItems, newCartItem];
-      }
+    setItems((prevItems) => {
+      return prevItems
+        .map(item => {
+          if (item.id === itemId) {
+            return { ...item, quantity: item.quantity + delta };
+          }
+          return item;
+        })
+        .filter(item => item.quantity > 0);
     });
   }
-  const cart = {
-    items: [],
-    totalAmount: 0,
-  };
+  const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const checkout = () => {
+    // Here you can implement checkout logic, e.g., sending order to server
+    setItems([]);
+  }
 
   return (
-    <CartContext.Provider value={{ items, addItem }}>{children}</CartContext.Provider>
+    <CartContext.Provider value={{ items, addItem, updateQuantity, total, checkout }}>{children}</CartContext.Provider>
   );
 }
 export default CartProvider;

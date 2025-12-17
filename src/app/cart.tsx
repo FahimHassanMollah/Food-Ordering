@@ -1,19 +1,28 @@
-import { View, Text, StyleSheet, Pressable, Platform } from 'react-native'
-import React, { useContext } from 'react'
-import { useRouter } from 'expo-router'
-import { FontAwesome } from '@expo/vector-icons'
-import { StatusBar } from 'expo-status-bar';
+import Button from '@/components/Button';
+import CartListItem from '@/components/CartListItem';
+import { Text } from '@/components/Themed';
 import { useCart } from '@/providers/CartProvider';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 export default function Cart() {
     const router = useRouter();
-    const { items } = useCart();
+    const { items, total, checkout } = useCart();
 
     return (
-        <View style={styles.container}>
-            <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-
-            <View style={styles.content}>
+        <View >
+            <FlatList
+                data={items}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => <CartListItem cartItem={item} />}
+                contentContainerStyle={{ padding: 16, gap: 10 }}
+            />
+            <Text>
+                Total: ${total}
+            </Text>
+            <Button onPress={checkout} text="Checkout" />
+            {/* <View style={styles.content}>
                 <Text style={styles.emptyCartText}>Your cart is empty</Text>
                 <Text style={styles.subText}>Add items from the menu to get started</Text>
             </View>
@@ -23,19 +32,12 @@ export default function Cart() {
             >
                 <FontAwesome name="arrow-left" size={20} color="#007AFF" />
                 <Text style={styles.backButtonText}>Back to Menu</Text>
-            </Pressable>
+            </Pressable> */}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
     content: {
         alignItems: 'center',
         marginBottom: 40,

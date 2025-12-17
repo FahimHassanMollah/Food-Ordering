@@ -6,14 +6,15 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import 'react-native-reanimated';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/components/useColorScheme';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import CartProvider from '@/providers/CartProvider';
+import { StatusBar } from 'expo-status-bar';
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from 'expo-router';
 
 export const unstable_settings = {
@@ -52,25 +53,33 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <CartProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-          <Stack.Screen
-            name="cart"
-            options={{
-              title: 'Cart',
-              presentation: Platform.OS === 'ios' ? 'modal' : 'card',
-              headerShown: true,
-              animationTypeForReplace: 'push',
-              gestureEnabled: Platform.OS === 'ios'
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <CartProvider>
+          <Stack
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: colorScheme === 'dark' ? '#000' : '#fff',
+              },
             }}
-          />
-        </Stack>
-      </CartProvider>
-    </ThemeProvider>
+          >
+            <Stack.Screen name="index" options={{ headerShown: true,title: 'Home' }} />
 
+            <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+            <Stack.Screen name="(user)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="cart"
+              options={{
+                title: 'Cart',
+                presentation: Platform.OS === 'ios' ? 'modal' : 'card',
+                headerShown: true,
+                animationTypeForReplace: 'push',
+                gestureEnabled: Platform.OS === 'ios'
+              }}
+            />
+          </Stack>
+          
+        </CartProvider>
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} translucent={false} />
+      </ThemeProvider>
   );
 }
