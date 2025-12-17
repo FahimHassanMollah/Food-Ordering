@@ -5,9 +5,12 @@ import Colors from '@/constants/Colors';
 import { Text } from '@/components/Themed';
 import { defaultPizzaImage } from '@/components/ProductListItem';
 import * as ImagePicker from 'expo-image-picker';
-import { Stack } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 
 export default function CreateProductScreen() {
+    const { id } = useLocalSearchParams();
+    const isUpdating = !!id;
+    
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [error, setError] = useState('');
@@ -57,9 +60,33 @@ export default function CreateProductScreen() {
         // Handle product creation logic here
         resetFields();
     }
+    const onsubmit = () => {
+        if (isUpdating) {
+            onUpdate();
+        } else {
+            onCreate();
+        }
+    }
+    const onUpdate = () => {
+        if (!validateInput()) return;
+        // Handle product update logic here
+    }
+    const confirmDelete = () => {
+        Alert.alert(
+            'Confirm Delete',
+            'Are you sure you want to delete this product?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Delete', style: 'destructive', onPress: onDelete },
+            ]
+        );
+    }
+    const onDelete = () => {
+        // Handle product deletion logic here
+    }
     return (
         <View style={styles.container}>
-            <Stack.Screen options={{ title: 'Create Product' }} />
+            <Stack.Screen options={{ title: isUpdating ? 'Update Product' : 'Create Product' }} />
             <Image source={{uri: image ||defaultPizzaImage}} style={styles.image} />
             <Text style={styles.textButton} onPress={pickImage}>Select Image</Text>
             <Text style={styles.label}>Name</Text>
@@ -68,7 +95,10 @@ export default function CreateProductScreen() {
             <Text style={styles.label}>Price</Text>
             <TextInput placeholder="Product Price" style={styles.input} keyboardType="numeric" value={price} onChangeText={setPrice} />
             {error && <Text style={{color: 'red'}}>{error}</Text>}
-            <Button text="Create" onPress={onCreate} />
+            <Button text={isUpdating ? "Update" : "Create"} onPress={onsubmit} />
+            {
+                isUpdating && (<Text style={[styles.textButton, {color: 'red'}]} onPress={confirmDelete}>Delete Product</Text>)
+            }
         </View>
     )
 }

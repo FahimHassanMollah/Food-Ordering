@@ -26,22 +26,7 @@ export default function MenuLayout() {
           </Link>
         ),
       }} />
-      <Stack.Screen name="[id]" options={{
-        headerRight: () => (
-          <Link href="/create" asChild>
-            <Pressable>
-              {({ pressed }) => (
-                <FontAwesome
-                  name="edit"
-                  size={25}
-                  color={Colors.light.tint}
-                  style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                />
-              )}
-            </Pressable>
-          </Link>
-        ),
-      }} />
+     
       <Stack.Screen name="create" options={{ title: 'Create Product' }} />
     </Stack>
   )
