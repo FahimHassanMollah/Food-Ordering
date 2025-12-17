@@ -12,7 +12,7 @@ export default function MenuLayout() {
     }}>
       <Stack.Screen name="index" options={{
         title: 'Menu', headerRight: () => (
-          <Link href="/cart" asChild>
+          <Link href="(admin)/menu/create" asChild>
             <Pressable>
               {({ pressed }) => (
                 <FontAwesome
@@ -28,7 +28,7 @@ export default function MenuLayout() {
       }} />
       <Stack.Screen name="[id]" options={{
         headerRight: () => (
-          <Link href="/cart" asChild>
+          <Link href="/create" asChild>
             <Pressable>
               {({ pressed }) => (
                 <FontAwesome
@@ -42,6 +42,7 @@ export default function MenuLayout() {
           </Link>
         ),
       }} />
+      <Stack.Screen name="create" options={{ title: 'Create Product' }} />
     </Stack>
   )
 }
