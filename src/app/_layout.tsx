@@ -11,6 +11,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/components/useColorScheme';
 import CartProvider from '@/providers/CartProvider';
 import { StatusBar } from 'expo-status-bar';
+import AuthProvider from '@/providers/AuthProvider';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -54,6 +55,7 @@ function RootLayoutNav() {
 
   return (
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <AuthProvider>
         <CartProvider>
           <Stack
             screenOptions={{
@@ -82,6 +84,7 @@ function RootLayoutNav() {
           </Stack>
           
         </CartProvider>
+        </AuthProvider>
         <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} translucent={false} />
       </ThemeProvider>
   );
