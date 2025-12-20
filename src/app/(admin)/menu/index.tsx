@@ -1,10 +1,21 @@
-import { View } from '@/components/Themed';
-import products from '../../../../assets/data/products';
+import { Text, View } from '@/components/Themed';
 import ProductListItem from '@/components/ProductListItem';
-import { FlatList } from 'react-native';
-const product = products[0];
+import { ActivityIndicator, FlatList } from 'react-native';
+import { useProductList } from '@/api/products';
 
 export default function MenuScreen() {
+   const { data: products, error, isLoading } = useProductList();
+    if (isLoading) {
+      return <View>
+        <ActivityIndicator />
+      </View>;
+    }
+    if (error) {
+      return <View>
+        <Text>Error loading products</Text>
+      </View>;
+    }
+  
   return (
    <View style={{flex:1,backgroundColor: 'transparent'}}>
      <FlatList

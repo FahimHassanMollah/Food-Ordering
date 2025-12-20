@@ -5,12 +5,17 @@ import Colors from '@/constants/Colors';
 import { Text } from '@/components/Themed';
 import { defaultPizzaImage } from '@/components/ProductListItem';
 import * as ImagePicker from 'expo-image-picker';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useInsertProduct, useUpdateProduct } from '@/api/products';
 
 export default function CreateProductScreen() {
     const { id } = useLocalSearchParams();
     const isUpdating = !!id;
+    const router = useRouter();
+    const { mutate: insertProduct } = useInsertProduct();
+    const { mutate: updateProduct } = useUpdateProduct();
     
+
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [error, setError] = useState('');
@@ -56,8 +61,20 @@ export default function CreateProductScreen() {
     }
     const onCreate = () => {
         if (!validateInput()) return;
-        // Handle product creation logic here
-        resetFields();
+        insertProduct({
+            name,
+            price: parseFloat(price),
+            image,
+        },{
+            onSuccess: () => {
+                resetFields();
+                router.navigate('/(admin)/menu');
+                // Handle success
+            },
+            onError: (error) => {
+                // Handle error
+            },
+        });
     }
     const onsubmit = () => {
         if (isUpdating) {
@@ -68,7 +85,21 @@ export default function CreateProductScreen() {
     }
     const onUpdate = () => {
         if (!validateInput()) return;
-        // Handle product update logic here
+        updateProduct({
+            id: Number(id),
+            name,
+            price: parseFloat(price),
+            image,
+        },{
+            onSuccess: () => {
+                resetFields();
+                router.navigate('/(admin)/menu');
+                // Handle success
+            },
+            onError: (error) => {
+                // Handle error
+            },
+        });
     }
     const confirmDelete = () => {
         Alert.alert(

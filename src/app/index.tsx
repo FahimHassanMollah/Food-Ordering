@@ -6,12 +6,17 @@ import { useAuth } from '@/providers/AuthProvider';
 import { supabase } from '@/lib/supabase';
 
 const RootIndex = () => {
-  const { session, loading } = useAuth();
+  const { session, loading, isAdmin } = useAuth();
   if (loading){
     return <ActivityIndicator />; 
   }
   if (!session){
     return (<Redirect href='/sign-in'/>);
+  }
+  
+  if (!isAdmin){
+
+    return (<Redirect href='/(user)/menu'/>);
   }
   console.log(session?.user?.email,"index");
   const signOut = async () => {

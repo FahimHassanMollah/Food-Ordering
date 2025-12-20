@@ -1,9 +1,13 @@
 import OrderListItem from '@/components/OrderListItem';
+import { supabase } from '@/lib/supabase';
 import { Stack } from 'expo-router';
-import orders from '../../../../assets/data/orders';
+import { useEffect } from 'react';
 import { FlatList } from 'react-native';
+import orders from '../../../../assets/data/orders';
 
 export default function OrdersScreen() {
+ 
+
   return (
     <>
       <Stack.Screen options={{ title: 'Orders' }} />

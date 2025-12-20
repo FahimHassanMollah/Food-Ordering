@@ -12,6 +12,7 @@ import { useColorScheme } from '@/components/useColorScheme';
 import CartProvider from '@/providers/CartProvider';
 import { StatusBar } from 'expo-status-bar';
 import AuthProvider from '@/providers/AuthProvider';
+import QueryProvider from '@/providers/QueryProvider';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -54,38 +55,40 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <AuthProvider>
-        <CartProvider>
-          <Stack
-            screenOptions={{
-              headerStyle: {
-                backgroundColor: colorScheme === 'dark' ? '#000' : '#fff',
-              },
-            }}
-          >
-            <Stack.Screen name="index" options={{ headerShown: true,title: 'Home' }} />
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-
-            <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-            <Stack.Screen name="(user)" options={{ headerShown: false }} />
-
-            
-            <Stack.Screen
-              name="cart"
-              options={{
-                title: 'Cart',
-                presentation: Platform.OS === 'ios' ? 'modal' : 'card',
-                headerShown: true,
-                animationTypeForReplace: 'push',
-                gestureEnabled: Platform.OS === 'ios'
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <AuthProvider>
+        <QueryProvider>
+          <CartProvider>
+            <Stack
+              screenOptions={{
+                headerStyle: {
+                  backgroundColor: colorScheme === 'dark' ? '#000' : '#fff',
+                },
               }}
-            />
-          </Stack>
-          
-        </CartProvider>
-        </AuthProvider>
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} translucent={false} />
-      </ThemeProvider>
+            >
+              <Stack.Screen name="index" options={{ headerShown: true, title: 'Home' }} />
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+
+              <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+              <Stack.Screen name="(user)" options={{ headerShown: false }} />
+
+
+              <Stack.Screen
+                name="cart"
+                options={{
+                  title: 'Cart',
+                  presentation: Platform.OS === 'ios' ? 'modal' : 'card',
+                  headerShown: true,
+                  animationTypeForReplace: 'push',
+                  gestureEnabled: Platform.OS === 'ios'
+                }}
+              />
+            </Stack>
+
+          </CartProvider>
+        </QueryProvider>
+      </AuthProvider>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} translucent={false} />
+    </ThemeProvider>
   );
 }
