@@ -1,12 +1,12 @@
-import { View, StyleSheet, TextInput, Image, Alert } from 'react-native'
-import React, { useState } from 'react'
+import { View, StyleSheet, TextInput, Image, Alert, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import Button from '@/components/Button';
 import Colors from '@/constants/Colors';
 import { Text } from '@/components/Themed';
 import { defaultPizzaImage } from '@/components/ProductListItem';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useInsertProduct, useUpdateProduct } from '@/api/products';
+import { useDeleteProduct, useInsertProduct, useProduct, useUpdateProduct } from '@/api/products';
 
 export default function CreateProductScreen() {
     const { id } = useLocalSearchParams();
@@ -14,6 +14,8 @@ export default function CreateProductScreen() {
     const router = useRouter();
     const { mutate: insertProduct } = useInsertProduct();
     const { mutate: updateProduct } = useUpdateProduct();
+    const { mutate: deleteProduct, isPending: isDeleting } = useDeleteProduct();
+    const { data: product} = useProduct(Number(id));
     
 
     const [name, setName] = useState('');
@@ -25,6 +27,13 @@ export default function CreateProductScreen() {
         setName('');
         setPrice('');
     }
+    useEffect(() => {
+        if (product) {
+            setName(product.name);
+            setPrice(product.price.toString());
+            setImage(product.image);
+        }
+    }, [product]);
 
   const pickImage = async () => {
    
@@ -113,6 +122,20 @@ export default function CreateProductScreen() {
     }
     const onDelete = () => {
         // Handle product deletion logic here
+        deleteProduct(Number(id), {
+            onSuccess: () => {
+                resetFields();
+                router.navigate('/(admin)/menu');
+                // Handle success
+            },
+            onError: (error) => {
+                // Handle error
+            },
+        });
+
+    }
+    if (isDeleting) {
+        return <ActivityIndicator />;
     }
     return (
         <View style={styles.container}>

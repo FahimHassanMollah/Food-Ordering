@@ -38,10 +38,17 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
         }
         fetchSession();
-        supabase.auth.onAuthStateChange((_event, session) => {
+        supabase.auth.onAuthStateChange(async (_event, session) => {
             console.log(session?.user?.email, "from sub");
 
-            setSession(session);
+              const { data } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session?.user.id)
+                    .single();
+                setProfile(data || null);
+                setSession(session);
+                
         });
     }, [])
 
