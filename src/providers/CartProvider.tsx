@@ -1,6 +1,9 @@
+import { useInsertOrder } from "@/api/orders";
 import { CartItem, Product } from "@/types";
 import { randomUUID } from "expo-crypto";
+import { useRouter } from "expo-router";
 import { createContext, useContext, useState } from "react";
+import { useAuth } from "./AuthProvider";
 
 type CartType = {
   items: CartItem[];
@@ -18,7 +21,10 @@ const CartContext = createContext<CartType>({
 });
 
 const CartProvider = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter();
   const [items, setItems] = useState<CartItem[]>([]);
+  const { mutate: insertOrder } = useInsertOrder();
+  const {isAdmin} = useAuth();
   const addItem = (product: Product, size: CartItem['size'],) => {
     const existingItem = items.find((item) => item.product_id === product.id && item.size === size);
     if (existingItem) {
@@ -49,8 +55,22 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
   }
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const checkout = () => {
-    // Here you can implement checkout logic, e.g., sending order to server
-    setItems([]);
+    insertOrder({ total:0 }, {
+      onSuccess: (data) => {
+        setItems([]);
+        router.navigate(`/(admin)/orders/${data.id}`);
+        return 
+        if (isAdmin) {
+          router.navigate(`/(admin)/orders/${data.id}`);
+        } else {
+          router.navigate(`/(user)/orders/${data.id}`);
+        }
+      },
+      onError: (error) => {
+        console.error('Error creating order:', error);
+      }
+    });
+   
   }
 
   return (

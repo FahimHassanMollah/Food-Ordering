@@ -1,9 +1,18 @@
 import OrderListItem from '@/components/OrderListItem';
 import { Stack } from 'expo-router';
-import orders from '../../../../../assets/data/orders';
-import { FlatList } from 'react-native';
+// import orders from '../../../../../assets/data/orders';
+import { ActivityIndicator, FlatList } from 'react-native';
+import { useAdminOrderList } from '@/api/orders';
+import { Text } from '@/components/Themed';
 
 export default function OrdersScreen() {
+  const {data:orders, isLoading, error} = useAdminOrderList({ archived: false });
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
   return (
     <>
       <Stack.Screen options={{ title: 'Orders' }} />

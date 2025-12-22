@@ -9,6 +9,11 @@ import { FlatList, StyleSheet, View } from 'react-native';
 export default function Cart() {
     const router = useRouter();
     const { items, total, checkout } = useCart();
+    const handleCheckout = () => {
+        checkout();
+        // router.replace('/(user)/orders/checkout/success');
+    }
+
 
     return (
         <View >
@@ -21,7 +26,7 @@ export default function Cart() {
             <Text>
                 Total: ${total}
             </Text>
-            <Button onPress={checkout} text="Checkout" />
+            <Button onPress={handleCheckout} text="Checkout" />
             {/* <View style={styles.content}>
                 <Text style={styles.emptyCartText}>Your cart is empty</Text>
                 <Text style={styles.subText}>Add items from the menu to get started</Text>
