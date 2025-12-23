@@ -1,9 +1,10 @@
 import { useInsertOrder } from "@/api/orders";
-import { CartItem, Product } from "@/types";
+import { CartItem, Product, Tables } from "@/types";
 import { randomUUID } from "expo-crypto";
 import { useRouter } from "expo-router";
 import { createContext, useContext, useState } from "react";
 import { useAuth } from "./AuthProvider";
+import { useInsertOrderItems } from "@/api/order-items";
 
 type CartType = {
   items: CartItem[];
@@ -24,7 +25,8 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [items, setItems] = useState<CartItem[]>([]);
   const { mutate: insertOrder } = useInsertOrder();
-  const {isAdmin} = useAuth();
+  const { mutate: insertOrderItems } = useInsertOrderItems();
+  const { isAdmin } = useAuth();
   const addItem = (product: Product, size: CartItem['size'],) => {
     const existingItem = items.find((item) => item.product_id === product.id && item.size === size);
     if (existingItem) {
@@ -55,24 +57,36 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
   }
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const checkout = () => {
-    insertOrder({ total:0 }, {
-      onSuccess: (data) => {
-        setItems([]);
-        router.navigate(`/(admin)/orders/${data.id}`);
-        return 
-        if (isAdmin) {
-          router.navigate(`/(admin)/orders/${data.id}`);
-        } else {
-          router.navigate(`/(user)/orders/${data.id}`);
-        }
+    insertOrder({ total: 0 }, {
+      onSuccess: (data: Tables<'orders'>) => {
+        saveOrderItem(data);
       },
       onError: (error) => {
         console.error('Error creating order:', error);
       }
     });
-   
-  }
 
+  }
+  const saveOrderItem = (order: Tables<'orders'>) => {
+    insertOrderItems(items.map(item => ({
+      order_id: order.id,
+      product_id: item.product_id,
+      quantity: item.quantity,
+      size: item.size,
+    })), {
+      onSuccess: () => {
+        setItems([]);
+
+        if (isAdmin) {
+          router.navigate(`/(admin)/orders/${order.id}`);
+        } else {
+          router.navigate(`/(user)/orders/${order.id}`);
+        }
+      }, onError: (error) => {
+        console.error('Error saving order items:', error);
+      }
+    });
+  }
   return (
     <CartContext.Provider value={{ items, addItem, updateQuantity, total, checkout }}>{children}</CartContext.Provider>
   );

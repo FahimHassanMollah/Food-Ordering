@@ -5,11 +5,12 @@ import OrderListItem from '@/components/OrderListItem';
 import OrderItemListItem from '@/components/OrderItemListItem';
 import { OrderStatusList } from '@/types';
 import Colors from '@/constants/Colors';
-import { useOrderDetails } from '@/api/orders';
+import { useOrderDetails, useUpdateOrder } from '@/api/orders';
 
 const OrderDetailScreen = () => {
   const { id } = useLocalSearchParams();
   const {data:order, isLoading, error} = useOrderDetails(Number(id));
+  const { mutate: updateOrderStatus } = useUpdateOrder();
 
   if (isLoading) {
      return <ActivityIndicator />;
@@ -20,6 +21,9 @@ const OrderDetailScreen = () => {
   if (!order) {
     return <Text>Order not found!</Text>;
   }
+  const handleUpdateStatus = (status: string) => {
+    updateOrderStatus({ id: order.id, updatedFields: { status } });
+  };
 
   return (
     <View style={styles.container}>
@@ -39,7 +43,7 @@ const OrderDetailScreen = () => {
               {OrderStatusList.map((status) => (
                 <Pressable
                   key={status}
-                  onPress={() => console.warn('Update status')}
+                  onPress={() => handleUpdateStatus(status)}
                   style={{
                     borderColor: Colors.light.tint,
                     borderWidth: 1,

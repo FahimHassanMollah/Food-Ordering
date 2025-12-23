@@ -1,9 +1,13 @@
 import { FontAwesome5 } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
 import React from 'react'
+import { View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function OrdersListTabLayout() {
+    const insets = useSafeAreaInsets()
     return (
+        <View style={{ flex: 1, marginTop: -insets.top }}>
         <Tabs screenOptions={{
             headerShown: false,
             tabBarPosition: 'top',
@@ -25,5 +29,6 @@ export default function OrdersListTabLayout() {
                 }}
             />
         </Tabs>
+        </View>
     )
 }
