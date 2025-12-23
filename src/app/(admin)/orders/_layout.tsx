@@ -1,17 +1,15 @@
-import { View, Text, Pressable, useColorScheme } from 'react-native'
-import React from 'react'
-import { Link, Stack } from 'expo-router'
-import { FontAwesome } from '@expo/vector-icons'
-import Colors from '@/constants/Colors';
+import { Stack } from 'expo-router';
+import React from 'react';
+import { useColorScheme } from 'react-native';
 
 export default function MenuLayout() {
     const colorScheme = useColorScheme();
   return (
     <Stack screenOptions={{
-       headerShown: false
+       headerShown: true
     }}>
-      <Stack.Screen name="(admin)/orders/list"  options={{ title: 'Orders' }} />
-      <Stack.Screen name="(admin)/orders/[id]"  />
+      <Stack.Screen name="(admin)/orders/list"  options={{ headerShown: false }} />
+      <Stack.Screen name="(admin)/orders/[id]"  options={{ title: 'Order Details' }} />
     </Stack>
   )
 }
