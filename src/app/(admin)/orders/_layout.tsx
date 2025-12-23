@@ -9,8 +9,8 @@ export default function MenuLayout() {
        headerShown: true,
        title: 'Orders List',
     }}>
-      <Stack.Screen name="(admin)/orders/list"  options={{ headerShown: false }} />
-      <Stack.Screen name="(admin)/orders/[id]"  options={{ title: 'Order Details' }} />
+      <Stack.Screen name="list"  options={{ headerShown: false }} />
+      <Stack.Screen name="[id]"  options={{ title: 'Order Details' }} />
     </Stack>
   )
 }
