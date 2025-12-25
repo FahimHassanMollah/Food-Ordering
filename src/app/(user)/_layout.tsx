@@ -20,7 +20,8 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { session } = useAuth();
-
+  console.log(session?.user?.email,"layout user");
+  
   if (!session) {
     return (<Redirect href='/sign-in' />);
   }
@@ -59,6 +60,14 @@ export default function TabLayout() {
         options={{
           title: 'Orders',
           tabBarIcon: ({ color, size }) => <TabBarIcon name="list" color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          headerShown: true,
+          tabBarIcon: ({ color, size }) => <TabBarIcon name="user" color={color} size={size} />,
         }}
       />
     </Tabs>

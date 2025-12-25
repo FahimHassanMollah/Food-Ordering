@@ -6,11 +6,13 @@ import OrderItemListItem from '@/components/OrderItemListItem';
 import { OrderStatusList } from '@/types';
 import Colors from '@/constants/Colors';
 import { useOrderDetails, useUpdateOrder } from '@/api/orders';
+import { useUpdateOrderSubscription } from '@/api/orders/subscriptions';
 
 const OrderDetailScreen = () => {
   const { id } = useLocalSearchParams();
   const {data:order, isLoading, error} = useOrderDetails(Number(id));
   const { mutate: updateOrderStatus } = useUpdateOrder();
+  useUpdateOrderSubscription(Number(id));
 
   if (isLoading) {
      return <ActivityIndicator />;

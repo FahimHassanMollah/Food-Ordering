@@ -3,15 +3,15 @@ import { Text, View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Product } from '@/types';
 import { Link, useSegments } from 'expo-router';
-import { use } from 'react';
+import RemoteImage from './RemoteImage';
 export const defaultPizzaImage = 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
 const ProductListItem = ({ product }: { product: Product }) => {
-  const segments = useSegments();
+  const segments = useSegments();  
   
   return (
     <Link href={`${segments[0]}/menu/${product.id}`} asChild>
       <Pressable style={styles.container}>
-        <Image source={{ uri: product.image || defaultPizzaImage }} resizeMode='contain' style={styles.image} />
+        <RemoteImage path={product.image} fallback={defaultPizzaImage} resizeMode='contain' style={styles.image} />
         <Text style={styles.title}>{product.name}</Text>
         <Text style={styles.price}>${product.price}</Text>
       </Pressable>

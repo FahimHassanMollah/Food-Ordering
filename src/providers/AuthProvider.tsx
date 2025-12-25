@@ -39,15 +39,23 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         }
         fetchSession();
         supabase.auth.onAuthStateChange(async (_event, session) => {
-            console.log(session?.user?.email, "from sub");
-
+            console.log(session, "from sub");
+            if (!session) {
+                setProfile(null);
+                setSession(null);
+                return;
+            }
               const { data } = await supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', session?.user.id)
                     .single();
                 setProfile(data || null);
+                console.log(data,"profile data");
+                
                 setSession(session);
+                console.log(session,"lst ");
+                
                 
         });
     }, [])
